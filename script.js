@@ -69,13 +69,39 @@ const stockData = {
 // Chart instances
 let stockChart, portfolioChart, performanceChart, riskChart, returnsChart;
 
+// Prevent auto-scrolling globally
+let preventScroll = true;
+const originalScrollTo = window.scrollTo;
+const originalScrollIntoView = Element.prototype.scrollIntoView;
+
+// Override scroll functions to prevent unwanted scrolling
+window.scrollTo = function(x, y) {
+    if (!preventScroll) {
+        originalScrollTo.call(this, x, y);
+    }
+};
+
+Element.prototype.scrollIntoView = function(options) {
+    if (!preventScroll) {
+        originalScrollIntoView.call(this, options);
+    }
+};
+
 // Initialize all charts when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Keep scroll prevention active for longer
+    setTimeout(() => {
+        preventScroll = false;
+    }, 5000); // 5 seconds should be enough for all charts to load
+    
     initializeCharts();
     setupEventListeners();
 });
 
 function initializeCharts() {
+    // Set chart heights first to prevent layout shifts
+    setChartHeights();
+    
     // Stock Price Chart
     const stockCtx = document.getElementById('stockChart').getContext('2d');
     stockChart = new Chart(stockCtx, {
@@ -84,6 +110,7 @@ function initializeCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false, // Disable animations that might cause scrolling
             plugins: {
                 legend: {
                     position: 'top',
@@ -138,6 +165,7 @@ function initializeCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false, // Disable animations
             plugins: {
                 legend: {
                     position: 'right',
@@ -178,6 +206,7 @@ function initializeCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false, // Disable animations
             plugins: {
                 legend: {
                     position: 'top',
@@ -233,6 +262,7 @@ function initializeCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false, // Disable animations
             plugins: {
                 legend: {
                     display: false
@@ -291,6 +321,7 @@ function initializeCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: false, // Disable animations
             plugins: {
                 legend: {
                     display: false
@@ -315,9 +346,6 @@ function initializeCharts() {
             }
         }
     });
-
-    // Set chart heights
-    setChartHeights();
 }
 
 function setChartHeights() {
@@ -363,9 +391,9 @@ function setupEventListeners() {
             const targetId = this.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
-                // Use simple scroll to prevent auto-scrolling issues
+                // Use original scroll function for intentional navigation
                 const offsetTop = targetSection.offsetTop - 100; // Account for fixed navbar
-                window.scrollTo(0, offsetTop);
+                originalScrollTo.call(window, 0, offsetTop);
             }
         });
     });
@@ -374,7 +402,7 @@ function setupEventListeners() {
 function updateStockChart(period) {
     if (stockChart && stockData[period]) {
         stockChart.data = stockData[period];
-        stockChart.update('active');
+        stockChart.update('none'); // Use 'none' instead of 'active' to prevent animations
     }
 }
 
