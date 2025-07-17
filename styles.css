@@ -343,4 +343,16 @@ canvas {
 /* Prevent body scroll when charts are loading */
 body {
     overflow-x: hidden; /* Prevent horizontal scrolling */
+    scroll-behavior: auto; /* Disable smooth scrolling that might cause issues */
+}
+
+/* Prevent focus-based scrolling */
+* {
+    scroll-margin: 0;
+    scroll-padding: 0;
+}
+
+/* Ensure fixed positioning for navbar doesn't cause scroll jumps */
+html {
+    scroll-behavior: auto; /* Override any smooth scrolling */
 }
