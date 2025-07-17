@@ -5,181 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance Dashboard</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <h1 class="nav-title">📊 Finance Dashboard</h1>
-                <ul class="nav-links">
-                    <li><a href="#overview">Overview</a></li>
-                    <li><a href="#stocks">Stocks</a></li>
-                    <li><a href="#portfolio">Portfolio</a></li>
-                    <li><a href="#analytics">Analytics</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1>📊 Finance Dashboard</h1>
+            <p>Track your investments and market trends</p>
+        </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h2>Welcome to Your Finance Dashboard</h2>
-                <p>Track your investments, analyze market trends, and make informed financial decisions</p>
-            </div>
-        </section>
-
-        <!-- Overview Section -->
-        <section id="overview" class="section">
-            <div class="container">
-                <h2 class="section-title">Portfolio Overview</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Total Portfolio Value</h3>
-                        <p class="stat-value">$125,450</p>
-                        <span class="stat-change positive">+2.4% ↗</span>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Today's Gain/Loss</h3>
-                        <p class="stat-value">$2,890</p>
-                        <span class="stat-change positive">+2.35% ↗</span>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Gain/Loss</h3>
-                        <p class="stat-value">$18,650</p>
-                        <span class="stat-change positive">+17.5% ↗</span>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Cash Balance</h3>
-                        <p class="stat-value">$8,520</p>
-                        <span class="stat-change neutral">Available</span>
-                    </div>
+        <!-- Portfolio Overview -->
+        <section class="overview">
+            <h2>Portfolio Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Portfolio Value</h3>
+                    <p class="stat-value">$125,450</p>
+                    <span class="stat-change positive">+2.4% ↗</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Today's Gain/Loss</h3>
+                    <p class="stat-value">$2,890</p>
+                    <span class="stat-change positive">+2.35% ↗</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Gain/Loss</h3>
+                    <p class="stat-value">$18,650</p>
+                    <span class="stat-change positive">+17.5% ↗</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Cash Balance</h3>
+                    <p class="stat-value">$8,520</p>
+                    <span class="stat-change neutral">Available</span>
                 </div>
             </div>
         </section>
 
         <!-- Charts Section -->
-        <section id="stocks" class="section">
-            <div class="container">
-                <h2 class="section-title">Market Analysis</h2>
-                
-                <!-- Stock Price Chart -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>Stock Price Trends</h3>
-                        <div class="chart-controls">
-                            <button class="btn-period active" data-period="1D">1D</button>
-                            <button class="btn-period" data-period="1W">1W</button>
-                            <button class="btn-period" data-period="1M">1M</button>
-                            <button class="btn-period" data-period="1Y">1Y</button>
-                        </div>
+        <section class="charts">
+            <h2>Market Analysis</h2>
+            
+            <!-- Stock Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Stock Price Trends</h3>
+                    <div class="chart-controls">
+                        <button class="btn-period active" onclick="updateChart('1D')">1D</button>
+                        <button class="btn-period" onclick="updateChart('1W')">1W</button>
+                        <button class="btn-period" onclick="updateChart('1M')">1M</button>
+                        <button class="btn-period" onclick="updateChart('1Y')">1Y</button>
                     </div>
-                    <canvas id="stockChart"></canvas>
                 </div>
-
-                <!-- Portfolio Allocation -->
                 <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>Portfolio Allocation</h3>
-                    </div>
-                    <canvas id="portfolioChart"></canvas>
+                    <canvas id="stockChart" width="800" height="400"></canvas>
                 </div>
             </div>
-        </section>
 
-        <!-- Portfolio Performance -->
-        <section id="portfolio" class="section">
-            <div class="container">
-                <h2 class="section-title">Portfolio Performance</h2>
-                
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>Performance vs Market</h3>
-                    </div>
-                    <canvas id="performanceChart"></canvas>
+            <!-- Portfolio Allocation -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Portfolio Allocation</h3>
                 </div>
+                <div class="chart-container">
+                    <canvas id="portfolioChart" width="400" height="400"></canvas>
+                </div>
+            </div>
 
-                <!-- Top Holdings -->
-                <div class="holdings-container">
-                    <h3>Top Holdings</h3>
-                    <div class="holdings-table">
-                        <div class="holding-row header">
-                            <span>Symbol</span>
-                            <span>Company</span>
-                            <span>Shares</span>
-                            <span>Price</span>
-                            <span>Change</span>
-                            <span>Value</span>
-                        </div>
-                        <div class="holding-row">
-                            <span class="symbol">AAPL</span>
-                            <span>Apple Inc.</span>
-                            <span>150</span>
-                            <span>$175.24</span>
-                            <span class="positive">+1.2%</span>
-                            <span>$26,286</span>
-                        </div>
-                        <div class="holding-row">
-                            <span class="symbol">GOOGL</span>
-                            <span>Alphabet Inc.</span>
-                            <span>75</span>
-                            <span>$142.65</span>
-                            <span class="negative">-0.8%</span>
-                            <span>$10,699</span>
-                        </div>
-                        <div class="holding-row">
-                            <span class="symbol">MSFT</span>
-                            <span>Microsoft Corp.</span>
-                            <span>100</span>
-                            <span>$378.85</span>
-                            <span class="positive">+2.1%</span>
-                            <span>$37,885</span>
-                        </div>
-                        <div class="holding-row">
-                            <span class="symbol">TSLA</span>
-                            <span>Tesla Inc.</span>
-                            <span>50</span>
-                            <span>$248.42</span>
-                            <span class="positive">+3.5%</span>
-                            <span>$12,421</span>
-                        </div>
+            <!-- Performance Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Performance vs Market</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performanceChart" width="800" height="400"></canvas>
+                </div>
+            </div>
+
+            <!-- Holdings Table -->
+            <div class="chart-card">
+                <h3>Top Holdings</h3>
+                <div class="holdings-table">
+                    <div class="holding-row header">
+                        <span>Symbol</span>
+                        <span>Company</span>
+                        <span>Price</span>
+                        <span>Change</span>
+                        <span>Value</span>
+                    </div>
+                    <div class="holding-row">
+                        <span class="symbol">AAPL</span>
+                        <span>Apple Inc.</span>
+                        <span>$175.24</span>
+                        <span class="positive">+1.2%</span>
+                        <span>$26,286</span>
+                    </div>
+                    <div class="holding-row">
+                        <span class="symbol">GOOGL</span>
+                        <span>Alphabet Inc.</span>
+                        <span>$142.65</span>
+                        <span class="negative">-0.8%</span>
+                        <span>$10,699</span>
+                    </div>
+                    <div class="holding-row">
+                        <span class="symbol">MSFT</span>
+                        <span>Microsoft Corp.</span>
+                        <span>$378.85</span>
+                        <span class="positive">+2.1%</span>
+                        <span>$37,885</span>
+                    </div>
+                    <div class="holding-row">
+                        <span class="symbol">TSLA</span>
+                        <span>Tesla Inc.</span>
+                        <span>$248.42</span>
+                        <span class="positive">+3.5%</span>
+                        <span>$12,421</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Analytics Section -->
-        <section id="analytics" class="section">
-            <div class="container">
-                <h2 class="section-title">Advanced Analytics</h2>
-                
-                <div class="analytics-grid">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Risk Analysis</h3>
-                        </div>
-                        <canvas id="riskChart"></canvas>
-                    </div>
-                    
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Monthly Returns</h3>
-                        </div>
-                        <canvas id="returnsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
+        <footer>
             <p>&copy; 2024 Finance Dashboard. Built with Chart.js and hosted on GitHub Pages.</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
