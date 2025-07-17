@@ -322,24 +322,25 @@ footer {
     }
 }
 
-/* Animation for loading */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* Remove problematic animations that cause scroll issues */
 .section {
-    animation: fadeInUp 0.6s ease-out;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* Chart canvas styling */
+/* Chart canvas styling - prevent layout shifts */
 canvas {
     max-width: 100%;
     height: auto;
+    display: block; /* Prevent margin collapse */
+}
+
+/* Ensure chart containers have stable dimensions */
+.chart-container canvas {
+    min-height: 350px; /* Minimum height to prevent shifts */
+}
+
+/* Prevent body scroll when charts are loading */
+body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
