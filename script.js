@@ -321,12 +321,22 @@ function initializeCharts() {
 }
 
 function setChartHeights() {
-    // Set specific heights for better visualization
-    document.getElementById('stockChart').style.height = '400px';
-    document.getElementById('portfolioChart').style.height = '400px';
-    document.getElementById('performanceChart').style.height = '400px';
-    document.getElementById('riskChart').style.height = '350px';
-    document.getElementById('returnsChart').style.height = '350px';
+    // Set specific heights for better visualization and prevent layout shifts
+    const charts = [
+        { id: 'stockChart', height: '400px' },
+        { id: 'portfolioChart', height: '400px' },
+        { id: 'performanceChart', height: '400px' },
+        { id: 'riskChart', height: '350px' },
+        { id: 'returnsChart', height: '350px' }
+    ];
+    
+    charts.forEach(chart => {
+        const element = document.getElementById(chart.id);
+        if (element) {
+            element.style.height = chart.height;
+            element.style.minHeight = chart.height; // Prevent height changes
+        }
+    });
 }
 
 function setupEventListeners() {
@@ -345,7 +355,7 @@ function setupEventListeners() {
         });
     });
 
-    // Smooth scrolling for navigation links
+    // Navigation links - simple scroll without smooth behavior
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -353,10 +363,9 @@ function setupEventListeners() {
             const targetId = this.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
-                targetSection.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                // Use simple scroll to prevent auto-scrolling issues
+                const offsetTop = targetSection.offsetTop - 100; // Account for fixed navbar
+                window.scrollTo(0, offsetTop);
             }
         });
     });
@@ -369,76 +378,18 @@ function updateStockChart(period) {
     }
 }
 
-// Animate numbers on scroll
-function animateNumbers() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = entry.target;
-                const finalValue = target.textContent;
-                animateValue(target, 0, parseFloat(finalValue.replace(/[^0-9.-]+/g,"")), 2000);
-            }
-        });
-    });
-
+// Simple number formatting without animation
+function formatNumbers() {
     document.querySelectorAll('.stat-value').forEach(el => {
-        observer.observe(el);
+        const text = el.textContent;
+        if (text.includes('$')) {
+            const number = parseFloat(text.replace(/[^0-9.-]+/g,""));
+            el.textContent = '$' + number.toLocaleString('en-US', {maximumFractionDigits: 0});
+        }
     });
 }
 
-function animateValue(element, start, end, duration) {
-    const startTime = performance.now();
-    const isMonetary = element.textContent.includes('$');
-    const isPercentage = element.textContent.includes('%');
-    
-    function updateValue(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        const current = start + (end - start) * easeOutQuart;
-        
-        if (isMonetary) {
-            element.textContent = '$' + current.toLocaleString('en-US', {maximumFractionDigits: 0});
-        } else if (isPercentage) {
-            element.textContent = current.toFixed(1) + '%';
-        } else {
-            element.textContent = current.toLocaleString('en-US', {maximumFractionDigits: 0});
-        }
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateValue);
-        }
-    }
-    
-    requestAnimationFrame(updateValue);
-}
-
-// Initialize number animation when page loads
+// Initialize number formatting when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(animateNumbers, 500); // Delay to ensure charts load first
+    setTimeout(formatNumbers, 500);
 });
-
-// Update data periodically (simulate real-time updates)
-setInterval(() => {
-    // Simulate real-time price updates
-    updateRandomPrices();
-}, 10000); // Update every 10 seconds
-
-function updateRandomPrices() {
-    // Update portfolio value with small random changes
-    const portfolioElement = document.querySelector('.stat-value');
-    if (portfolioElement) {
-        let currentValue = 125450;
-        const change = (Math.random() - 0.5) * 1000; // Random change between -500 and +500
-        const newValue = currentValue + change;
-        portfolioElement.textContent = '$' + newValue.toLocaleString('en-US', {maximumFractionDigits: 0});
-        
-        // Update the change percentage
-        const changeElement = portfolioElement.nextElementSibling;
-        const changePercent = (change / currentValue * 100).toFixed(2);
-        changeElement.textContent = (changePercent >= 0 ? '+' : '') + changePercent + '% ' + (changePercent >= 0 ? '↗' : '↘');
-        changeElement.className = 'stat-change ' + (changePercent >= 0 ? 'positive' : 'negative');
-    }
-}
